@@ -12,8 +12,8 @@ class User(Base):
     creation_date = Column(DateTime(timezone=True), default=func.now())
 
     def __repr__(self) -> str:
-        return f"<User(id={self.id}, name={self.name})>"
+        return f"User(id={self.id}, phone_number={self.phone_number})"
 
     @property
-    def hyperlink(self) -> str:
-        return hlink(self.name, f"tg://user?id={self.id}")
+    def hyperlink(self, name: str) -> str:
+        return hlink(name, f"tg://user?id={self.id}")
