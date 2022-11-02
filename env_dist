@@ -1,3 +1,5 @@
+# Rename this file to .env
+
 ## Token (required). Get it from @BotFather
 BOT__TOKEN=
 ## FSM Storage. Values allowed: memory, redis
