@@ -1,17 +1,18 @@
 from typing import Any
-from sqlalchemy.ext.asyncio import AsyncSession
+
 from sqlalchemy.engine import Result
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.util import EMPTY_DICT
 
 
 class BaseRepo:
     def __init__(self, session: AsyncSession) -> None:
-        self.session = session
+        self._session = session
 
-    def session_add(self, *instances) -> None:
-        self.session.add_all(instances)
+    def _session_add(self, *instances) -> None:
+        self._session.add_all(instances)
 
-    async def execute(
+    async def _execute(
         self,
         statement,
         params=None,
@@ -19,11 +20,11 @@ class BaseRepo:
         bind_arguments=None,
         **kw
     ) -> Result:
-        return await self.session.execute(
+        return await self._session.execute(
             statement, params, execution_options, bind_arguments, **kw
         )
 
-    async def scalar(
+    async def _scalar(
         self,
         statement,
         params=None,
@@ -31,7 +32,7 @@ class BaseRepo:
         bind_arguments=None,
         **kw
     ) -> Any:
-        result = await self.execute(
+        result = await self._execute(
             statement,
             params=params,
             execution_options=execution_options,
@@ -40,7 +41,7 @@ class BaseRepo:
         )
         return result.scalar()
 
-    async def scalar_one(
+    async def _scalar_one(
         self,
         statement,
         params=None,
@@ -48,7 +49,7 @@ class BaseRepo:
         bind_arguments=None,
         **kw
     ) -> Any:
-        result = await self.execute(
+        result = await self._execute(
             statement,
             params=params,
             execution_options=execution_options,
@@ -57,7 +58,7 @@ class BaseRepo:
         )
         return result.scalar_one()
 
-    async def scalars_all(
+    async def _scalars_all(
         self,
         statement,
         params=None,
@@ -65,7 +66,7 @@ class BaseRepo:
         bind_arguments=None,
         **kw
     ) -> list[Any]:
-        result = await self.execute(
+        result = await self._execute(
             statement,
             params=params,
             execution_options=execution_options,
@@ -76,6 +77,6 @@ class BaseRepo:
 
     async def commit(self, *instances) -> None:
         if instances:
-            self.session_add(*instances)
+            self._session_add(*instances)
 
-        await self.session.commit()
+        await self._session.commit()
